@@ -68,20 +68,5 @@ public class PostagemController {
 		Optional<Postagem> postagem = repository.findById(id);
 		if(postagem.isEmpty())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 }
