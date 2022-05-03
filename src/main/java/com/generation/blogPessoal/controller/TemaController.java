@@ -30,4 +30,9 @@ public class TemaController {
 				.map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.notFound().build());
 	}
+	
+	@GetMapping("/nome")
+	public ResponseEntity<List<Tema>> getByName(@PathVariable("nome") String nome){
+		return ResponseEntity.ok(repository.findAllByDescricaoContainingIgnoreCase(nome));
+	}
 }
