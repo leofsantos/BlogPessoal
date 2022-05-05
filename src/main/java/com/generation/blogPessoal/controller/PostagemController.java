@@ -50,16 +50,23 @@ public class PostagemController {
 		return ResponseEntity.ok(repository.findAllByTituloContainingIgnoreCase(titulo));
 	}
 	
+		
 	@PostMapping
-	public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem){
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
+	public ResponseEntity<Postagem> postPostagem(@Valid @RequestBody Postagem postagem){
+		if (repository.existsById(postagem.getTema().getId()))
+			return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
+	     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 	
 	@PutMapping
-	public ResponseEntity<Postagem> put(@Valid @RequestBody Postagem postagem){
-		return repository.findById(postagem.getId())
-				.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem)))
-				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+	public ResponseEntity<Postagem> putPostagem(@Valid @RequestBody Postagem postagem){
+		if (repository.existsById(postagem.getId())){
+			if (repository.existsById(postagem.getTema().getId()))
+				return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}	
+			else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -68,5 +75,7 @@ public class PostagemController {
 		Optional<Postagem> postagem = repository.findById(id);
 		if(postagem.isEmpty())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		
+		repository.deleteById(id);
 	}	
 }
