@@ -1,6 +1,5 @@
 package com.generation.blogPessoal.controller;
 
-import java.lang.StackWalker.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +32,7 @@ public class PostagemController {
 	@Autowired
 	private PostagemRepository repository;
 	
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<List<Postagem>> getAllPostagem(){
 		return ResponseEntity.ok(repository.findAll());
 	}
@@ -51,14 +50,14 @@ public class PostagemController {
 	}
 	
 		
-	@PostMapping
+	@PostMapping("/publicar")
 	public ResponseEntity<Postagem> postPostagem(@Valid @RequestBody Postagem postagem){
 		if (repository.existsById(postagem.getTema().getId()))
 			return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 	
-	@PutMapping
+	@PutMapping("/atualizar")
 	public ResponseEntity<Postagem> putPostagem(@Valid @RequestBody Postagem postagem){
 		if (repository.existsById(postagem.getId())){
 			if (repository.existsById(postagem.getTema().getId()))
