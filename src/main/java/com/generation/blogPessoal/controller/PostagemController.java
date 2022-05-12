@@ -22,46 +22,50 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.blogPessoal.model.Postagem;
 import com.generation.blogPessoal.repository.PostagemRepository;
+import com.generation.blogPessoal.repository.TemaRepository;
 
 
 @RestController
 @RequestMapping("/postagens")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostagemController {
 
 	@Autowired
-	private PostagemRepository repository;
+	private PostagemRepository postagemRepository;
+	
+	@Autowired
+	private TemaRepository temaRepository;
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Postagem>> getAllPostagem(){
-		return ResponseEntity.ok(repository.findAll());
+		return ResponseEntity.ok(postagemRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Postagem> getById(@PathVariable Long id){
-		return repository.findById(id)
+		return postagemRepository.findById(id)
 				.map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 	
 	@GetMapping("/titulo/{titulo}")
 	public ResponseEntity<List<Postagem>> getByTitulo(@PathVariable("titulo") String titulo){
-		return ResponseEntity.ok(repository.findAllByTituloContainingIgnoreCase(titulo));
+		return ResponseEntity.ok(postagemRepository.findAllByTituloContainingIgnoreCase(titulo));
 	}
 	
 		
 	@PostMapping("/publicar")
 	public ResponseEntity<Postagem> postPostagem(@Valid @RequestBody Postagem postagem){
-		if (repository.existsById(postagem.getTema().getId()))
-			return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
+		if (temaRepository.existsById(postagem.getTema().getId()))
+			return ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem));
 	     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 	
 	@PutMapping("/atualizar")
 	public ResponseEntity<Postagem> putPostagem(@Valid @RequestBody Postagem postagem){
-		if (repository.existsById(postagem.getId())){
-			if (repository.existsById(postagem.getTema().getId()))
-				return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
+		if (postagemRepository.existsById(postagem.getId())){
+			if (postagemRepository.existsById(postagem.getTema().getId()))
+				return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 			}	
 			else
@@ -71,10 +75,10 @@ public class PostagemController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
-		Optional<Postagem> postagem = repository.findById(id);
+		Optional<Postagem> postagem = postagemRepository.findById(id);
 		if(postagem.isEmpty())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		
-		repository.deleteById(id);
+		postagemRepository.deleteById(id);
 	}	
 }
