@@ -3,7 +3,7 @@ package com.generation.blogPessoal.service;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
-import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -77,8 +77,7 @@ public class UsuarioService {
 
 	private boolean compararSenhas(String senhaDigitada, String senhaBanco) {
 		
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();		
 		return encoder.matches(senhaDigitada, senhaBanco);
 
 	}
@@ -88,7 +87,5 @@ public class UsuarioService {
 		String token = usuario + ":" + senha;
 		byte[] tokenBase64 = Base64.encodeBase64(token.getBytes(Charset.forName("US-ASCII")));
 		return "Basic " + new String(tokenBase64);
-
 	}
-
 }
