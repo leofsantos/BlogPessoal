@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,18 +48,19 @@ public class TemaController {
 		return ResponseEntity.ok(repository.findAllByDescricaoContainingIgnoreCase(nome));
 	}
 	
-	@PostMapping
+	@PostMapping("/criar")
 	public ResponseEntity<Tema> post(@Valid @RequestBody Tema tema){
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema));
 	}
 	
-	@PutMapping
+	@PutMapping("/atualizar")
 	public ResponseEntity<Tema> put(@Valid @RequestBody Tema tema){
 		return repository.findById(tema.getId())
 				.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema)))
 				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable("id") Long id) {
 		Optional<Tema> tema = repository.findById(id);
