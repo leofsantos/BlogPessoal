@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity
 @Table(name = "tb_usuario")
 public class Usuario {
@@ -27,6 +29,7 @@ public class Usuario {
 	@NotNull(message = "Este campo é obrigatório.")
 	private String nome;
 	
+	@Schema(example = "email@email.com.br")
 	@NotNull(message = "Este campo é obrigatório.")
 	@Email(message = "Insira um e-mail válido.")
 	private String usuario;
@@ -37,10 +40,26 @@ public class Usuario {
 	
 	private String foto;
 	
+	private String tipo;
+	
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("usuario")
 	private List<Postagem> postagem;
 	
+	public Usuario(long id,String nome,String usuario,String senha,String foto,String tipo) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.usuario = usuario;
+		this.senha = senha;
+		this.foto = foto;
+		this.tipo = tipo;
+	}
+	
+	public Usuario() {
+		super();
+	}
+
 	public List<Postagem> getPostagem() {
 		return postagem;
 	}
@@ -87,6 +106,14 @@ public class Usuario {
 
 	public void setFoto(String foto) {
 		this.foto = foto;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 	
 }
